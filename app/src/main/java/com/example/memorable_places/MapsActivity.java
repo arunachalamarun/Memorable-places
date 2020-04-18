@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -36,7 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LocationManager locationManager;
     LocationListener locationListener;
     List<Address> addresses = null;
-
+    static SharedPreferences sharedPreferences;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -68,7 +69,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(locat).title(way));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(locat));
-
+        try {
+            sharedPreferences.edit().putString("places", ObjectSerializer.serialize(MainActivity.places)).apply();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -77,7 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(latLng).title("previous location"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,7));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 7));
 
 
     }
@@ -160,6 +165,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Geocoder land = new Geocoder(getApplicationContext(), Locale.ENGLISH);
             addresses = land.getFromLocation(latLng.latitude, latLng.longitude, 1);
             MainActivity.places.add(addresses.get(0).getAddressLine(0));
+            MainActivity.savedPlaces.add(addresses.get(0).getCountryName());
+
+            sharedPreferences.edit().putString("places", ObjectSerializer.serialize(MainActivity.places)).apply();
+
+            Log.i("onclick is", MainActivity.places.toString());
 
             MainActivity.longClicks.add(latLng);
         } catch (IOException e) {
