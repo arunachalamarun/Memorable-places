@@ -49,55 +49,65 @@ public class MainActivity<Public> extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
-        switch (item.getItemId()) {
-            case R.id.delete:
-                change();
-                return true;
-            case R.id.help:
-                Log.i("erased", "helped");
-                return true;
-            default:
-                return false;
+        try {
+            switch (item.getItemId()) {
+                case R.id.delete:
+                    change();
+                    return true;
+                case R.id.help:
+                    return true;
+                default:
+                    return false;
+            }
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_LONG).show();
+
         }
+    return true;
     }
 
 
     public void change() {
-        new AlertDialog.Builder(this)
-                //.setIcon(R.drawable.ic_launcher_background)
-                .setTitle("select one").setMessage("select one")
-                .setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        try {
+            new AlertDialog.Builder(this)
+                    //.setIcon(R.drawable.ic_launcher_background)
+                    .setTitle("CONFIRM DELETE ALL").setMessage("Are you sure you want to delete this")
+                    .setPositiveButton("yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-                        sharedPreferences.edit().clear().commit();
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.clear();
-                        editor.commit();
+                            sharedPreferences.edit().clear().commit();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.clear();
+                            editor.commit();
 
-                        // SharedPreferences.Editor editor;
-                        PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
-                        editor = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE).edit();
-                        editor.clear();
-                        editor.commit();
-                        //adapter();
-                        places.clear();
-                        places.add("find a new places");
-                        adapter.notifyDataSetChanged();
+                            // SharedPreferences.Editor editor;
+                            PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
+                            editor = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE).edit();
+                            editor.clear();
+                            editor.commit();
+                            //adapter();
+                            places.clear();
+                            places.add("find a new places");
+                            adapter.notifyDataSetChanged();
 
-                        // PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply()
+                            // PreferenceManager.getDefaultSharedPreferences(context).edit().clear().apply()
 
-                    }
-                })
+                        }
+                    })
 
-                .setNegativeButton("no", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_LONG).show();
+                    .setNegativeButton("no", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(getApplicationContext(), "ok", Toast.LENGTH_LONG).show();
 
-                    }
-                })
-                .show();
+                        }
+                    })
+                    .show();
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
+        }
+
     }
 
 
@@ -148,7 +158,7 @@ public class MainActivity<Public> extends AppCompatActivity {
     }
 
     public void adapter() {
-         list = (ListView) findViewById(R.id.listView);
+        list = (ListView) findViewById(R.id.listView);
         adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, places);
         list.setAdapter(adapter);
 
